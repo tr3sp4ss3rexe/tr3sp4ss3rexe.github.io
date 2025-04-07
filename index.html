@@ -460,9 +460,25 @@
 
                  // ** REMOVED Case for: motd **
 
-                 case 'blog':
-                      appendOutput("Blog section is planned. Check back later or visit <a href='blog.html' class='output-link'>blog.html</a> if available.");
-                      break;
+                case 'blog':
+                    if (args.length === 1) {
+                        // List all blogs
+                        try {
+                            const blogList = await getBlogList();
+                            if (blogList.length > 0) {
+                                appendOutput(["Available Blogs:"].concat(blogList.map(blog => `<a href="blogs/${blog}.html" class="output-link">${blog}</a>`)));
+                            } else {
+                                appendOutput("No blogs available yet.");
+                            }
+                        } catch (error) {
+                            appendOutput(`Error fetching blog list: ${error}`, 'output-error');
+                        }
+                    } else {
+                        // View a specific blog
+                        const blogName = args.slice(1).join('_'); // Handle spaces in blog names
+                        window.location.href = `blogs/${blogName}.html`; // Redirect to the blog page
+                    }
+                    break;
 
                  case 'clear':
                      outputElement.innerHTML = '';
