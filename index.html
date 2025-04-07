@@ -5,7 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Hackerman Home</title>
   <style>
-    /* Global Styles */
     body {
       background-color: black;
       color: darkgreen;
@@ -13,7 +12,6 @@
       margin: 0;
       padding: 20px;
     }
-    /* Navigation */
     nav {
       margin-bottom: 20px;
     }
@@ -35,10 +33,36 @@
     <a href="blog.html">Blog</a>
   </nav>
   <header>
-    <h1>Welcome to My Edgy Hackerman Site</h1>
+    <h1 id="typewriter"></h1>
   </header>
   <section>
     <p>This is the home of my hackerman portfolio. Stay tuned for my latest projects and blog posts!</p>
   </section>
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const text = "Welcome to My Edgy Hackerman Site";
+      const typewriter = document.getElementById("typewriter");
+      let index = 0;
+      
+      function type() {
+        if (index < text.length) {
+          typewriter.innerHTML += text.charAt(index);
+          index++;
+          setTimeout(type, 100); // Adjust speed (in ms) between each character here.
+        } else {
+          // Pause when the text is fully written.
+          setTimeout(reset, 2000);
+        }
+      }
+      
+      function reset() {
+        typewriter.innerHTML = "";
+        index = 0;
+        setTimeout(type, 500); // Delay before restarting the loop.
+      }
+      
+      type();
+    });
+  </script>
 </body>
 </html>
