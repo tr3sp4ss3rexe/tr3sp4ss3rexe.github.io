@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Windows Internals Blog</title>
+    <style>
+        body {
+            background-color: #000000;
+            color: #008000;
+            font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+            padding: 20px;
+        }
+        h1 {
+            color: #00bb00;
+        }
+        p {
+            font-size: 1.2em;
+            line-height: 1.6;
+        }
+    </style>
+</head>
+<body>
+
+<h1>Understanding Windows Internals: A Simple Overview</h1>
+
+<p>Windows, like any complex operating system, has a carefully structured architecture to keep things running efficiently. The flow of execution between different components is key to how Windows performs tasks, handles requests, and keeps everything secure. If you’ve ever wondered how user applications interact with the heart of the system (the kernel), here’s a simplified breakdown of what’s happening behind the scenes.</p>
+
+<h2>Key Components in Windows Architecture</h2>
+
+<p>The architecture of Windows can be broken down into several layers:</p>
+<ul>
+    <li><strong>User Mode:</strong> This is where applications like Microsoft Word, Google Chrome, or any other software run. It’s a protected environment that prevents apps from directly accessing critical system resources. Here, we find:
+        <ul>
+            <li>User Processes</li>
+            <li>Service Processes</li>
+            <li>Subsystem DLLs (like ntdll.dll)</li>
+        </ul>
+    </li>
+    <li><strong>Kernel Mode:</strong> This is where the operating system kernel, device drivers, and hardware-level communication happen. Kernel mode has unrestricted access to everything on the system, so it's critical for low-level operations, including memory management, hardware control, and system resource management.</li>
+</ul>
+
+<h2>The Key Role of ntdll.dll and Syscalls</h2>
+
+<p>At the heart of the interaction between user applications and the kernel are <strong>syscalls</strong>. When a user-mode process needs to perform a task that requires kernel-level permissions (like accessing hardware or reading from disk), it cannot do so directly. Instead, it must make a <strong>system call</strong> to request the kernel’s help.</p>
+
+<p>Here’s where <strong>ntdll.dll</strong> comes into play. This dynamic link library provides an interface for user-mode processes to interact with kernel-level services. When you make a system call (say, to write a file), your program will first interact with functions in <strong>ntdll.dll</strong>, which then translates that request into an actual syscall.</p>
+
+<h2>Execution Flow from User Mode to Kernel Mode</h2>
+
+<p>Let’s see how this process unfolds in the flow of execution:</p>
+<ol>
+    <li><strong>User Process Makes a Request:</strong> Consider an application (<code>Application.exe</code>) calling <code>DeviceIoControl</code> to request something from the system. This function call is typically part of user-mode code.</li>
+    <li><strong>User Mode to Kernel Mode:</strong> The call to <code>DeviceIoControl</code> actually gets passed to <strong>kernel32.dll</strong>. From there, a function in <strong>ntdll.dll</strong> is called (e.g., <code>NtDeviceIoControlFile</code>), which moves data into registers and then executes a syscall that transitions the process into kernel mode.</li>
+    <li><strong>Syscall to Kernel Mode:</strong> The kernel receives the request and starts processing it. Here, the <strong>I/O Manager</strong> (Ntoskrnl.exe) is responsible for managing the system’s I/O operations.</li>
+    <li><strong>The Kernel Does the Job:</strong> The <strong>driver</strong> (Driver.sys) finally handles the request. It executes the task (like reading/writing to hardware) and returns the result back to the user-mode process.</li>
+    <li><strong>Return to User Mode:</strong> After the kernel finishes the job, the result is sent back through the same chain—kernel mode to ntdll.dll, then back to the user application.</li>
+</ol>
+
+<p>This flow ensures that user-mode applications don’t directly access critical resources and the kernel remains protected. It also provides a clean and efficient way for programs to interact with the core system functionalities.</p>
+
+<h2>Wrapping Up</h2>
+
+<p>So, the next time you run an application on Windows, remember that it’s not just executing code in isolation. It’s communicating through <strong>syscalls</strong> and relying on <strong>ntdll.dll</strong> to bridge the gap between user mode and kernel mode. Whether it's reading a file, sending data over the network, or interacting with hardware, this architecture ensures that everything is done securely and efficiently.</p>
+
+</body>
+</html>
