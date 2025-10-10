@@ -1,548 +1,272 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Terminal CV - tr3sp4ss3r</title>
-    <style>
-        /* --- Configuration (Dark Green Theme) --- */
-        :root {
-            --background-color: #000000; /* Black */
-            --text-color: #008000;       /* Dark Green */
-            --prompt-color: #00aa00;     /* Slightly Brighter Green for prompt */
-            --command-color: #cccccc;   /* Light Grey for typed commands */
-            --output-color: #008000;    /* Dark Green for standard output */
-            --title-color: #00bb00;      /* Brighter Green for titles */
-            --link-color: #33cc33;       /* Lighter Green for links */
-            --error-color: #cc6666;      /* Muted Red for errors */
-            --font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
-            --font-size: 1em;
-        }
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Your Name — Portfolio</title>
+  <meta name="description" content="Developer • Reverse Engineer • CTF Player" />
+  <meta name="theme-color" content="#0b0b0c" />
+  <style>
+    /* ---------- Base & Theme ---------- */
+    :root{
+      --bg:#0b0b0c;
+      --panel:#121214;
+      --muted:#9aa0a6;
+      --text:#e7e9ea;
+      --accent:#7dd3fc;
+      --accent-2:#60a5fa;
+      --ring: rgba(125,211,252,.45);
+      --shadow: 0 10px 30px rgba(0,0,0,.35);
+      --font: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, "Helvetica Neue", Arial, "Apple Color Emoji","Segoe UI Emoji";
+      --radius: 16px;
+      --maxw: 880px;
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0; background:radial-gradient(1200px 600px at 50% -100px,#111 20%,transparent 60%) , var(--bg);
+      color:var(--text); font:16px/1.6 var(--font); -webkit-font-smoothing:antialiased; text-rendering:optimizeLegibility;
+    }
+    a{color:inherit; text-decoration:none}
+    a:focus-visible, button:focus-visible { outline: 2px solid var(--ring); outline-offset: 2px; border-radius:10px }
+    img{max-width:100%; display:block}
 
-        /* --- Base Styles --- */
-        html, body {
-            height: 100%;
-            margin: 0;
-            padding: 0;
-            background-color: var(--background-color);
-            color: var(--text-color); /* Default text color */
-            font-family: var(--font-family);
-            font-size: var(--font-size);
-            line-height: 1.5;
-        }
+    .container{max-width:var(--maxw); margin-inline:auto; padding:24px; }
+    .center{ text-align:center }
+    .muted{ color:var(--muted) }
+    .spacer-1{ height:16px } .spacer-2{ height:24px } .spacer-3{ height:40px } .spacer-4{ height:64px }
 
-        /* --- Terminal Container --- */
-        #terminal {
-            height: 100vh;
-            padding: 15px;
-            box-sizing: border-box;
-            overflow-y: auto;
-            display: flex;
-            flex-direction: column;
-        }
+    /* ---------- Header / Hero ---------- */
+    header{ position:sticky; top:0; backdrop-filter:saturate(140%) blur(6px);
+            background:linear-gradient(180deg, rgba(12,12,13,.9), rgba(12,12,13,.6) 60%, transparent);
+            border-bottom:1px solid rgba(255,255,255,.05); z-index:50 }
+    nav{ display:flex; align-items:center; justify-content:space-between; gap:12px; max-width:var(--maxw); margin:0 auto; padding:12px 24px }
+    .brand{ font-weight:700; letter-spacing:.3px }
+    .navlinks a{ padding:8px 10px; border-radius:10px; color:var(--muted) }
+    .navlinks a:hover{ color:var(--text); background:rgba(255,255,255,.04) }
 
-        /* --- Output Area --- */
-        #output {
-            flex-grow: 1;
-            white-space: pre-wrap;
-            word-wrap: break-word;
-            color: var(--output-color); /* Use specific output color */
-        }
+    .hero{
+      display:grid; justify-items:center; gap:14px; padding:54px 0 28px;
+    }
+    .hero img{
+      width:min(260px,60vw); aspect-ratio: 3 / 2; object-fit:contain; opacity:.95; filter:drop-shadow(0 30px 60px rgba(0,0,0,.45));
+      user-select:none; -webkit-user-drag:none;
+    }
+    h1{ font-size:clamp(28px, 4.2vw, 40px); margin:.2rem 0 }
+    .subtitle{ font-weight:600; color:#eef; text-shadow:0 1px 0 #000 }
+    .btnrow{ display:flex; gap:12px; flex-wrap:wrap; justify-content:center; margin-top:6px }
+    .btn{
+      display:inline-flex; align-items:center; gap:8px; padding:10px 14px; border-radius:14px; background:#1a1c20;
+      border:1px solid rgba(255,255,255,.08); box-shadow:var(--shadow); transition:.18s transform ease, .18s background ease;
+      will-change:transform
+    }
+    .btn:hover{ transform:translateY(-2px); background:#1e2024 }
+    .btn .dot{ width:8px; height:8px; border-radius:50%; background:linear-gradient(45deg,var(--accent),var(--accent-2)) }
 
-        /* --- Input Line --- */
-        .input-line {
-            display: flex;
-            align-items: center;
-            margin-top: 5px;
-        }
+    /* ---------- Socials ---------- */
+    .socials{ display:flex; gap:12px; justify-content:center; align-items:center; opacity:.95 }
+    .iconbtn{
+      width:36px; height:36px; display:grid; place-items:center; border-radius:12px;
+      background:#16181a; border:1px solid rgba(255,255,255,.08); transition:.18s;
+    }
+    .iconbtn:hover{ transform:translateY(-2px); background:#1a1d20 }
+    .icon{ width:18px; height:18px; fill:#c7cbd1 }
 
-        .prompt {
-            color: var(--prompt-color);
-            font-weight: bold;
-            margin-right: 8px;
-        }
+    /* ---------- Sections ---------- */
+    section{ padding:18px 0 6px }
+    .section-title{ font-size:20px; font-weight:700; letter-spacing:.3px; margin:0 0 8px }
+    .panel{ background:linear-gradient(180deg,#121316, #0f1012); border:1px solid rgba(255,255,255,.08); border-radius:var(--radius); padding:18px; box-shadow:var(--shadow) }
 
-        #commandInput {
-            flex-grow: 1;
-            background: transparent;
-            border: none;
-            color: var(--command-color);
-            font-family: inherit;
-            font-size: inherit;
-            outline: none;
-            padding: 0;
-            line-height: inherit;
-        }
+    /* ---------- Writeups / Blog ---------- */
+    .chips{ display:flex; flex-wrap:wrap; gap:8px; margin-bottom:10px }
+    .chip{
+      padding:6px 10px; border-radius:999px; border:1px solid rgba(255,255,255,.1); color:var(--muted); background:#14161a; cursor:pointer; user-select:none;
+    }
+    .chip[data-active="true"]{ color:#fff; border-color:transparent; background:linear-gradient(45deg,var(--accent),var(--accent-2)) }
+    .posts{ display:grid; grid-template-columns:repeat(auto-fit,minmax(260px,1fr)); gap:12px }
+    .post{ padding:14px; border-radius:14px; border:1px solid rgba(255,255,255,.08); background:#121418 }
+    .post h3{ font-size:16px; margin:4px 0 6px }
+    .post .meta{ font-size:12px; color:var(--muted) }
 
-        /* --- Cursor --- */
-        .cursor {
-            display: inline-block;
-            background-color: var(--text-color); /* Cursor color matches text */
-            width: 10px;
-            height: 1.2em;
-            margin-left: 5px;
-            animation: blink 1s step-end infinite;
-            vertical-align: bottom;
-        }
+    /* ---------- Projects ---------- */
+    .projects{ display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:12px }
+    .card{ padding:16px; border-radius:14px; border:1px solid rgba(255,255,255,.08); background:#111317 }
+    .card h3{ margin:0 0 4px; font-size:16px }
+    .card p{ margin:0; color:var(--muted) }
 
-        @keyframes blink {
-            from, to { background-color: transparent; }
-            50% { background-color: var(--text-color); } /* Blink with text color */
-        }
+    /* ---------- Footer ---------- */
+    footer{ color:var(--muted); padding:40px 0 60px }
+    .hr{ height:1px; background:linear-gradient(90deg, transparent, rgba(255,255,255,.08), transparent); margin:24px 0 }
 
-        /* --- Specific Output Styles --- */
-         .output-command {
-             color: var(--command-color); /* Show command in command color */
-         }
-         .output-command .prompt { /* Style prompt within output */
-             color: var(--prompt-color);
-             font-weight: bold;
-             margin-right: 8px;
-         }
-
-        .output-error {
-            color: var(--error-color);
-        }
-
-        .output-title {
-            color: var(--title-color); /* Use title color */
-            font-weight: bold;
-            /* text-decoration: underline; */ /* Optional: remove underline if preferred */
-            margin-top: 10px;
-            margin-bottom: 5px;
-        }
-         .output-title-icon { /* Style for icons in titles */
-              margin-right: 8px;
-         }
-
-        .output-link {
-            color: var(--link-color);
-            text-decoration: underline;
-            cursor: pointer;
-        }
-        .output-link:hover {
-            color: var(--title-color); /* Brighten link on hover */
-        }
-
-         /* Style for subheadings within sections */
-         .output-subtitle {
-              color: var(--prompt-color); /* Use prompt color for subheadings */
-              font-weight: bold;
-              margin-top: 8px;
-              margin-bottom: 3px;
-              margin-left: 1em; /* Indent subheadings slightly */
-         }
-
-         /* Style list items */
-         .output-list-item {
-             margin-left: 2em; /* Indent list items */
-         }
-         .output-list-item-bullet {
-              margin-right: 5px;
-         }
-
-        /* --- Helper class for typewriter effect --- */
-        .typing {
-             /* No specific style needed here currently */
-        }
-
-    </style>
+    @media (prefers-reduced-motion:reduce){
+      .btn:hover, .iconbtn:hover { transform:none }
+    }
+  </style>
 </head>
 <body>
 
-<div id="terminal">
-    <div id="output"></div>
-    <div class="input-line">
-        <span class="prompt">$&gt;</span> <input type="text" id="commandInput" autofocus autocomplete="off" spellcheck="false">
-        <span class="cursor"></span>
-    </div>
-</div>
+  <!-- Header -->
+  <header>
+    <nav aria-label="Main">
+      <div class="brand">Your Name</div>
+      <div class="navlinks">
+        <a href="#writeups">Write-ups</a>
+        <a href="#projects">Projects</a>
+        <a href="#contact">Contact</a>
+      </div>
+    </nav>
+  </header>
 
-<script>
-    const outputElement = document.getElementById('output');
-    const commandInputElement = document.getElementById('commandInput');
-    const terminalElement = document.getElementById('terminal');
+  <main class="container">
 
-    // --- Configuration ---
-    const TYPE_DELAY = 50; // Milliseconds between character typing (adjust for speed)
-    const BANNER_TEXT = "Disassemble reality, one instruction at a time.";
-    const STARTUP_MESSAGES = [
-        `tr3sp4ss3r`,
-        "",
-        `Type 'help' for commands or 'banner' to see the quote.`
-    ];
+    <!-- Hero -->
+    <section class="hero center" aria-label="Intro">
+      <!-- Replace hero.png with your image (transparent PNG or any) -->
+      <img src="hero.png" alt="Personal emblem" />
+      <h1>Your Name</h1>
+      <div class="subtitle">Developer • Reverse Engineer • CTF Player • Scrub</div>
 
-    // --- CV Data (Integrated from your cv.html) ---
-    const cvData = {
-        name: "Daniel Mohagheghifard",
-        contact: {
-            email: "danielmmfard@gmail.com",
-            github: "tr3sp4ss3rexe",
-            linkedin: "danielthedaniel", // Just the username part for consistency
-            linkedin_url: "https://www.linkedin.com/in/danielthedaniel/" // Full URL for link
-        },
-        skills: {
-            programming: [
-                 "C/C++",
-                 "Python",
-                 "NodeJS",
-                 "x86_64 Assembly",
-                 "Software architecture and object-oriented design",
-                 "Windows API"
-             ],
-            security: {
-                "Red Teaming & Penetration Testing": [
-                    "Windows implant dev & AV evasion",
-                    "Post-exploitation in AD environments: domain enum, SQL server attacks, priv esc, persistence, lateral movement",
-                    "Operating from C2 infrastructure",
-                    "Manual vuln & misconfig analysis",
-                    "Experience with external pentests"
-                ],
-                "Web App Security": [
-                    "SQLi, XSS, File Inclusion, Command Injection"
-                ],
-                "Vuln Research & Exploit Dev": [
-                    "Familiarity with Stack/SEH/Heap overflows, info leaks",
-                    "Bypass techniques: DEP, ASLR, stack cookies",
-                    "Binary reversing & decompilation"
-                ]
-            },
-            languages: [
-                "Persian (native)",
-                "English (professional)",
-                "Swedish (professional)"
-            ]
-        },
-        experience: [ // Employment section
-            {
-                title: "Software Engineering Intern",
-                company: "Ericsson AB",
-                period: "2025 – present",
-                description: []
-            },
-            {
-                title: "Developer, Security Researcher",
-                company: "Ocleon AB",
-                period: "2021 – 2022",
-                description: []
-            },
-             {
-                title: "Production Team Member",
-                company: "Dynamic Code AB",
-                period: "2020 – 2021",
-                description: []
-            }
-        ],
-        education: [
-             {
-                degree: "BSc in Software Engineering",
-                institution: "BTH (Blekinge Tekniska Högskola)",
-                period: "2023 – 2026",
-                details: ""
-            },
-            {
-                degree: "Information Technology",
-                institution: "MTU Gymnasium",
-                period: "2020 – 2023",
-                details: ""
-            }
-        ],
-        certifications: [ // Training & Certifications
-            "✔️ CRTP - Altered Security",
-            "✔️ CEH / CEH Practical - EC-Council (likely expired)",
-            "✔️ Intermediate Malware Dev - Sektor7",
-            "✔️ Offensive Driver Dev - Zero Point Security",
-            "🛠️ CETP - Altered Security (in progress)",
-            "🛠️ EXP-301 - Offensive Security (in progress)"
-        ]
-    };
+      <div class="btnrow" role="group" aria-label="Primary">
+        <a class="btn" href="#writeups"><span class="dot" aria-hidden="true"></span> Write-ups</a>
+        <a class="btn" href="#blog"><span class="dot" aria-hidden="true"></span> Blog</a>
+      </div>
 
-    // --- Command History ---
-    let commandHistory = [];
-    let historyIndex = -1;
+      <div class="spacer-1"></div>
 
-    // --- Core Functions ---
+      <div class="socials" aria-label="Social links">
+        <a class="iconbtn" href="https://github.com/yourname" aria-label="GitHub">
+          <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 .5a12 12 0 0 0-3.79 23.4c.6.11.82-.26.82-.58v-2.03c-3.34.73-4.04-1.61-4.04-1.61-.55-1.4-1.34-1.77-1.34-1.77-1.1-.75.08-.73.08-.73 1.22.09 1.86 1.26 1.86 1.26 1.08 1.86 2.83 1.32 3.52 1.01.11-.79.42-1.32.76-1.62-2.67-.3-5.48-1.34-5.48-5.95 0-1.31.47-2.39 1.24-3.23-.12-.3-.54-1.51.12-3.14 0 0 1.01-.32 3.3 1.23a11.5 11.5 0 0 1 6 0c2.29-1.55 3.3-1.23 3.3-1.23.66 1.63.24 2.84.12 3.14.77.84 1.24 1.92 1.24 3.23 0 4.62-2.81 5.64-5.49 5.94.43.37.82 1.1.82 2.22v3.29c0 .32.21.7.82.58A12 12 0 0 0 12 .5Z"/></svg>
+        </a>
+        <a class="iconbtn" href="https://x.com/yourname" aria-label="Twitter">
+          <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M20.23 2H16.9l-4.1 5.61L9.08 2H2l7.5 10.86L2.35 22h3.33l4.53-6.19L14.92 22H22l-7.93-11.49L20.23 2Z"/></svg>
+        </a>
+        <a class="iconbtn" href="mailto:you@example.com" aria-label="Email">
+          <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 4H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2Zm0 4-8 5L4 8V6l8 5 8-5v2Z"/></svg>
+        </a>
+      </div>
+    </section>
 
-    // Appends text to the output, handling arrays, styling, and optional typing effect (Corrected Version)
-    function appendOutput(text, className = '', typeEffect = false, callback = null) {
-        const lines = Array.isArray(text) ? text : [text];
+    <div class="spacer-3"></div>
+    <div class="hr" role="separator" aria-hidden="true"></div>
 
-        if (!typeEffect) {
-            // --- Simple Path for Instant Output ---
-            lines.forEach(line => {
-                const lineElement = document.createElement('div');
-                if (className) lineElement.className = className;
-                if (line.trim().startsWith('<')) {
-                    lineElement.innerHTML = line;
-                } else {
-                    lineElement.textContent = line;
-                }
-                outputElement.appendChild(lineElement);
-            });
-            scrollToBottom();
-            commandInputElement.focus();
-            if (callback) callback();
+    <!-- Writeups / Blog -->
+    <section id="writeups" aria-labelledby="writeups-title">
+      <h2 class="section-title" id="writeups-title">Write-ups & Blog</h2>
+      <div class="panel">
+        <div class="chips" role="tablist" aria-label="Filter by year">
+          <button class="chip" data-year="all" data-active="true" role="tab" aria-selected="true">All</button>
+          <button class="chip" data-year="2025" role="tab" aria-selected="false">2025</button>
+          <button class="chip" data-year="2024" role="tab" aria-selected="false">2024</button>
+          <button class="chip" data-year="2023" role="tab" aria-selected="false">2023</button>
+        </div>
 
-        } else {
-            // --- Original Typing Effect Path ---
-            let charIndex = 0;
-            let lineIndex = 0;
-            let currentLineElement = null;
+        <div class="posts" id="postGrid" role="list">
+          <!-- 2025 -->
+          <article class="post" role="listitem" data-year="2025">
+            <h3><a href="#">CTF: Binary Exploitation — “Lazy Stack”</a></h3>
+            <div class="meta">Jan 2025 • pwn • x64</div>
+            <p>Ret2libc with a twist: constrained write + partial overwrite notes.</p>
+          </article>
+          <article class="post" role="listitem" data-year="2025">
+            <h3><a href="#">Blog: Minimal crash triage workflow</a></h3>
+            <div class="meta">Feb 2025 • reversing</div>
+            <p>Notes on bucketing, deduping, and quick symbolization.</p>
+          </article>
 
-            function typeCharacter() {
-                if (lineIndex >= lines.length) {
-                    scrollToBottom();
-                    commandInputElement.focus();
-                    if (callback) callback();
-                    return;
-                }
+          <!-- 2024 -->
+          <article class="post" role="listitem" data-year="2024">
+            <h3><a href="#">CTF: “Byte Bakery” write-up</a></h3>
+            <div class="meta">Sep 2024 • rev • .NET</div>
+            <p>IL patching and simple control-flow deobfuscation using dnlib.</p>
+          </article>
+          <article class="post" role="listitem" data-year="2024">
+            <h3><a href="#">Blog: Ghidra scripts I actually keep</a></h3>
+            <div class="meta">Apr 2024 • tools</div>
+            <p>Short list of helpers for renaming, string xrefs, and proto fixups.</p>
+          </article>
 
-                if (charIndex === 0) {
-                    currentLineElement = document.createElement('div');
-                    if (className) currentLineElement.className = className;
-                    if (lines[lineIndex].trim().startsWith('<')) {
-                        currentLineElement.innerHTML = lines[lineIndex];
-                        outputElement.appendChild(currentLineElement);
-                        lineIndex++;
-                        charIndex = 0;
-                        scrollToBottom();
-                        setTimeout(typeCharacter, 5);
-                        return;
-                    } else {
-                        outputElement.appendChild(currentLineElement);
-                    }
-                }
+          <!-- 2023 -->
+          <article class="post" role="listitem" data-year="2023">
+            <h3><a href="#">CTF: “Milk Crate” reversing</a></h3>
+            <div class="meta">Nov 2023 • rev • C++</div>
+            <p>Finite-state puzzle; extracting the password from transition table.</p>
+          </article>
+          <article class="post" role="listitem" data-year="2023">
+            <h3><a href="#">Blog: My dotfiles for RE</a></h3>
+            <div class="meta">Jun 2023 • setup</div>
+            <p>Snippets for pwndbg, gdbinit, Cutter themes, and Binja highlights.</p>
+          </article>
+        </div>
+      </div>
+    </section>
 
-                const currentTextLine = lines[lineIndex];
-                if (currentLineElement && charIndex < currentTextLine.length) {
-                    currentLineElement.textContent += currentTextLine[charIndex];
-                    charIndex++;
-                    scrollToBottom();
-                    setTimeout(typeCharacter, TYPE_DELAY);
-                } else if (currentLineElement) {
-                    lineIndex++;
-                    charIndex = 0;
-                    if (lineIndex < lines.length) {
-                        setTimeout(typeCharacter, TYPE_DELAY * 2);
-                    } else {
-                        typeCharacter();
-                    }
-                }
-            }
-            typeCharacter();
+    <div class="spacer-4" id="blog"></div>
+
+    <!-- Projects -->
+    <section id="projects" aria-labelledby="projects-title">
+      <h2 class="section-title" id="projects-title">Projects</h2>
+      <div class="projects">
+        <a class="card" href="#" aria-label="AsmResolver">
+          <h3>AsmResolver</h3>
+          <p>.NET assembly manipulation playground.</p>
+        </a>
+        <a class="card" href="#" aria-label="OldRod">
+          <h3>OldRod</h3>
+          <p>Simple Windows anti-debug & evasion lab.</p>
+        </a>
+        <a class="card" href="#" aria-label="AwaitFuscator">
+          <h3>AwaitFuscator</h3>
+          <p>Tiny async/await control-flow obfuscation demo.</p>
+        </a>
+        <a class="card" href="#" aria-label="AvaloniaHex">
+          <h3>AvaloniaHex</h3>
+          <p>Lightweight hex viewer written with Avalonia.</p>
+        </a>
+      </div>
+    </section>
+
+    <div class="spacer-4"></div>
+    <div class="hr" role="separator" aria-hidden="true"></div>
+
+    <!-- Contact -->
+    <section id="contact" class="center" aria-labelledby="contact-title">
+      <h2 class="section-title" id="contact-title">Contact</h2>
+      <p class="muted">DMs open. For faster replies: <a href="mailto:you@example.com">you@example.com</a></p>
+    </section>
+
+    <footer class="center">
+      <div class="spacer-2"></div>
+      <div>© <span id="year"></span> Your Name</div>
+    </footer>
+  </main>
+
+  <script>
+    // Year in footer
+    document.getElementById('year').textContent = new Date().getFullYear();
+
+    // Smooth-scroll for in-page links (no external libs)
+    document.querySelectorAll('a[href^="#"]').forEach(a=>{
+      a.addEventListener('click', e=>{
+        const id = a.getAttribute('href').slice(1);
+        const target = document.getElementById(id);
+        if(target){
+          e.preventDefault();
+          target.scrollIntoView({behavior:'smooth', block:'start'});
         }
-    }
-
-
-    // Formats CV sections for terminal output
-    function formatSection(title, content, icon = '') {
-        let output = [`<div class="output-title">${icon ? '<span class="output-title-icon">' + icon + '</span>' : ''}${title}</div>`];
-        if (Array.isArray(content)) {
-            content.forEach(item => {
-                if (typeof item === 'object' && item !== null) {
-                    // Handle Experience/Education format
-                    if (item.title && item.company && item.period) { // Experience
-                        output.push(`<div class="output-list-item"><span class="output-list-item-bullet">💼</span> ${item.title} @ ${item.company} (${item.period})</div>`);
-                        if(item.description && item.description.length > 0){
-                             item.description.forEach(desc => output.push(`<div class="output-list-item" style="margin-left: 3.5em;">- ${desc}</div>`));
-                        }
-                    } else if (item.degree && item.institution && item.period) { // Education
-                        output.push(`<div class="output-list-item"><span class="output-list-item-bullet">🎓</span> ${item.degree} - ${item.institution} (${item.period})</div>`);
-                        if (item.details) output.push(`<div class="output-list-item" style="margin-left: 3.5em;">- ${item.details}</div>`);
-                    } else {
-                        output.push(`<div class="output-list-item">${JSON.stringify(item)}</div>`);
-                    }
-                } else {
-                    const bullet = item.includes('✔️') ? '' : (item.includes('🛠️') ? '' : '-');
-                    output.push(`<div class="output-list-item">${bullet ? '<span class="output-list-item-bullet">'+bullet+'</span> ' : ''}${item}</div>`);
-                }
-            });
-        } else if (typeof content === 'object' && content !== null) {
-             for (const key in content) {
-                 if (content.hasOwnProperty(key)) {
-                     const value = content[key];
-                     if(typeof value === 'object' && !Array.isArray(value)){ // Nested object like skills.security
-                          output.push(`<div class="output-subtitle">${key}</div>`);
-                          for (const subKey in value) {
-                              if (value.hasOwnProperty(subKey)) {
-                                  if(Array.isArray(value[subKey])){
-                                       value[subKey].forEach(skillItem => output.push(`<div class="output-list-item"><span class="output-list-item-bullet">-</span> ${skillItem}</div>`));
-                                  } else {
-                                       output.push(`<div class="output-list-item">${subKey}: ${value[subKey]}</div>`);
-                                  }
-                              }
-                          }
-                     } else if (Array.isArray(value)) { // Simple list within the object (like skills.programming)
-                          output.push(`<div class="output-subtitle">${key.charAt(0).toUpperCase() + key.slice(1)}</div>`);
-                           value.forEach(item => output.push(`<div class="output-list-item"><span class="output-list-item-bullet">-</span> ${item}</div>`));
-                     }
-                     else if (value) {
-                         let displayValue = value;
-                         if (key === 'email') {
-                             displayValue = `<a href="mailto:${value}" class="output-link">${value}</a>`;
-                         } else if (key === 'github') {
-                             displayValue = `<a href="https://github.com/${value}" target="_blank" class="output-link">github.com/${value}</a>`;
-                         } else if (key === 'linkedin_url') {
-                              continue;
-                         } else if (key === 'linkedin'){
-                             const url = cvData.contact.linkedin_url || `https://www.linkedin.com/in/${value}/`;
-                             displayValue = `<a href="${url}" target="_blank" class="output-link">linkedin.com/in/${value}</a>`;
-                         }
-                         output.push(`<div class="output-list-item"><span style="text-transform: capitalize;">${key.replace('_url','')}</span>: ${displayValue}</div>`);
-                     }
-                 }
-            }
-        } else {
-            output.push(content);
-        }
-        output.push('');
-        return output;
-    }
-
-    // Processes the entered command
-    function processCommand(command) {
-         const commandTrimmed = command.trim();
-         const commandOutputLine = document.createElement('div');
-         commandOutputLine.classList.add('output-command');
-         commandOutputLine.innerHTML = `<span class="prompt">$&gt;</span>${commandTrimmed}`;
-         outputElement.appendChild(commandOutputLine);
-
-        if (commandTrimmed && commandTrimmed !== commandHistory[commandHistory.length - 1]) {
-            commandHistory.push(commandTrimmed);
-        }
-        historyIndex = commandHistory.length;
-
-        const args = commandTrimmed.toLowerCase().split(' ').filter(arg => arg !== '');
-        const cmd = args[0];
-
-        // Add small delay before showing output for realism
-        setTimeout(() => {
-             switch (cmd) {
-                 case 'help':
-                     // ** UPDATED Help Message **
-                     appendOutput([
-                         "Command List:",
-                         "  help          - Shows this help message",
-                         "  whoami        - Displays the full CV",
-                         "  contact       - Shows contact details",
-                         "  banner        - Displays the startup banner quote",
-                         "  clear         - Clears the terminal screen",
-                         "  echo [text]   - Prints the text back",
-                         "  blog          - Info about the blog",
-                         "",
-                         "Tip: Use Up/Down arrow keys for command history."
-                     ]);
-                     break;
-
-                 case 'whoami':
-                      appendOutput([
-                          `Displaying full CV for ${cvData.name}:`,
-                          ""
-                           ]);
-                      // Display all sections sequentially
-                      appendOutput(formatSection("Contact", cvData.contact, '✉️'));
-                      appendOutput(formatSection("Skills", cvData.skills, '🧠'));
-                      appendOutput(formatSection("Experience", cvData.experience, '💼'));
-                      appendOutput(formatSection("Education", cvData.education, '🎓'));
-                      appendOutput(formatSection("Certifications", cvData.certifications, '📜'));
-                      appendOutput(formatSection("Languages", cvData.skills.languages, '🌐'));
-                      break;
-
-                 case 'contact': // Kept contact as it's often useful standalone
-                     appendOutput(formatSection("Contact Information", cvData.contact, '✉️'));
-                     break;
-
-                 // ** REMOVED Cases for: whoami, skills, experience, education, certs, languages **
-
-                 case 'banner':
-                     appendOutput(BANNER_TEXT, '', true); // Typewriter effect for banner
-                     break;
-
-                 // ** REMOVED Case for: motd **
-
-                 case 'blog':
-                      appendOutput("Blog section is planned. Check back later or visit <a href='blog.html' class='output-link'>blog.html</a> if available.");
-                      break;
-
-                 case 'clear':
-                     outputElement.innerHTML = '';
-                     break;
-
-                 case 'echo':
-                     const textToEcho = args.slice(1).join(' ');
-                     appendOutput(textToEcho || '');
-                     break;
-
-                 // ** REMOVED Case for: date **
-
-                 default:
-                     if (commandTrimmed) {
-                         appendOutput(`command not found: ${commandTrimmed}`, 'output-error');
-                     } else {
-                         appendOutput('');
-                     }
-             }
-              setTimeout(() => {
-                  scrollToBottom();
-                  commandInputElement.focus();
-              }, 50);
-
-        }, 10);
-    }
-
-    // Scrolls the terminal to the bottom
-    function scrollToBottom() {
-        setTimeout(() => {
-           terminalElement.scrollTop = terminalElement.scrollHeight;
-        }, 0);
-    }
-
-    // --- Event Listeners ---
-    commandInputElement.addEventListener('keydown', function(event) {
-        if (event.key === 'Enter') {
-            event.preventDefault();
-            const command = commandInputElement.value;
-            commandInputElement.value = '';
-            processCommand(command);
-        } else if (event.key === 'ArrowUp') {
-             event.preventDefault();
-            if (commandHistory.length > 0 && historyIndex > 0) {
-                historyIndex--;
-                commandInputElement.value = commandHistory[historyIndex];
-                setTimeout(() => commandInputElement.setSelectionRange(commandInputElement.value.length, commandInputElement.value.length), 0);
-            }
-        } else if (event.key === 'ArrowDown') {
-             event.preventDefault();
-            if (historyIndex < commandHistory.length - 1) {
-                historyIndex++;
-                commandInputElement.value = commandHistory[historyIndex];
-                 setTimeout(() => commandInputElement.setSelectionRange(commandInputElement.value.length, commandInputElement.value.length), 0);
-            } else if (historyIndex === commandHistory.length - 1) {
-                 historyIndex = commandHistory.length;
-                 commandInputElement.value = '';
-            }
-        }
+      });
     });
 
-    terminalElement.addEventListener('click', function(event) {
-         if (event.target.tagName !== 'A' && window.getSelection().toString() === '') {
-            commandInputElement.focus();
-         }
-    });
-
-    // --- Initialization ---
-    function initializeTerminal() {
-         STARTUP_MESSAGES.forEach(msg => appendOutput(msg)); // Show startup instantly
-         appendOutput(BANNER_TEXT,'', true, () => { // Type out the banner
-            scrollToBottom();
-            commandInputElement.focus();
-         });
-    }
-
-    // Start the terminal
-    initializeTerminal();
-
-</script>
-
+    // Year filter logic for writeups/blog
+    const chips = document.querySelectorAll('.chip');
+    const posts = document.querySelectorAll('.post');
+    chips.forEach(ch => ch.addEventListener('click', () => {
+      chips.forEach(c => { c.dataset.active = 'false'; c.setAttribute('aria-selected','false'); });
+      ch.dataset.active = 'true'; ch.setAttribute('aria-selected','true');
+      const yr = ch.dataset.year;
+      posts.forEach(p => {
+        p.style.display = (yr === 'all' || p.dataset.year === yr) ? '' : 'none';
+      });
+    }));
+  </script>
 </body>
 </html>
